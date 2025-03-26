@@ -5,7 +5,7 @@ const ExamResults = sequelize.define('ExamResults', {
   student_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Students',
+      model: 'students',
       key: 'student_id',
     },
     primaryKey: true,
@@ -13,7 +13,7 @@ const ExamResults = sequelize.define('ExamResults', {
   exam_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Exams',
+      model: 'exams',
       key: 'exam_id',
     },
     primaryKey: true,
@@ -27,7 +27,7 @@ const ExamResults = sequelize.define('ExamResults', {
     allowNull: false,
   },
 }, {
-  tableName: 'ExamResults',
+  tableName: 'examresults',
   timestamps: false,
 });
 

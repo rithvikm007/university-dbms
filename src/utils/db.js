@@ -15,8 +15,7 @@ const initModels = async () => {
   const { default: Student } = await import("../models/Student.js");
   const { default: Faculty } = await import("../models/Faculty.js");
 
-  // Sync the models (don't use force in production, it drops tables every time)
-  await sequelize.sync();
+  await import("../models/associations.js");
   console.log("✅ Tables synced successfully!");
 };
 

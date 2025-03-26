@@ -22,13 +22,13 @@ const Course = sequelize.define('Course', {
   department_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Departments',
+      model: 'departments',
       key: 'department_id',
     },
     allowNull: false,
   },
 }, {
-  tableName: 'Courses',
+  tableName: 'courses',
   timestamps: false,
 });
 

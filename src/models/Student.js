@@ -28,10 +28,13 @@ const Student = sequelize.define("Student", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Departments",
+      model: "departments",
       key: "department_id",
     },
   },
+},{
+  tableName: "students",
+  timestamps: false,
 });
 
 

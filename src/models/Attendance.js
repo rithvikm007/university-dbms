@@ -5,7 +5,7 @@ const Attendance = sequelize.define('Attendance', {
   student_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Students',
+      model: 'students',
       key: 'student_id',
     },
     primaryKey: true,
@@ -13,7 +13,7 @@ const Attendance = sequelize.define('Attendance', {
   course_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Courses',
+      model: 'courses',
       key: 'course_id',
     },
     primaryKey: true,
@@ -27,7 +27,7 @@ const Attendance = sequelize.define('Attendance', {
     defaultValue: 'Absent',
   },
 }, {
-  tableName: 'Attendances',
+  tableName: 'attendances',
   timestamps: false,
 });
 

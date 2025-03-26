@@ -7,7 +7,7 @@ const Enrollment = sequelize.define('Enrollment', {
   user_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: Student,
+      model: "students",
       key: 'student_id',
     },
     primaryKey: true,
@@ -15,13 +15,13 @@ const Enrollment = sequelize.define('Enrollment', {
   course_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: Course,
+      model: "courses",
       key: 'course_id',
     },
     primaryKey: true,
   },
 }, {
-  tableName: 'Enrollments',
+  tableName: 'enrollments',
   timestamps: false,
 });
 

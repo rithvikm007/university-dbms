@@ -5,7 +5,7 @@ const Class = sequelize.define('Class', {
   course_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Courses',
+      model: 'courses',
       key: 'course_id',
     },
     primaryKey: true,
@@ -13,7 +13,7 @@ const Class = sequelize.define('Class', {
   faculty_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Faculties',
+      model: 'faculties',
       key: 'faculty_id',
     },
     primaryKey: true,
@@ -23,7 +23,7 @@ const Class = sequelize.define('Class', {
     primaryKey: true,
   },
 }, {
-  tableName: 'Classes',
+  tableName: 'classes',
   timestamps: false,
 });
 
