@@ -26,7 +26,7 @@ export default function UpdateFaculty() {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const response = await fetch(`/api/faculty/${id}`);
+        const response = await fetch(`/api/faculties/${id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -70,7 +70,7 @@ export default function UpdateFaculty() {
     setSuccess("");
 
     try {
-      const response = await fetch(`/api/faculty/${id}`, {
+      const response = await fetch(`/api/faculties/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, phone, department_id: departmentId, role }),
@@ -78,7 +78,7 @@ export default function UpdateFaculty() {
 
       if (response.ok) {
         setSuccess("Faculty details updated successfully!");
-        setTimeout(() => router.push(`/faculty/${id}`), 1000);
+        setTimeout(() => router.push(`/faculties/${id}`), 1000);
       } else {
         setError("Failed to update faculty details.");
       }

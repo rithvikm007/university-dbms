@@ -18,7 +18,7 @@ export default function ViewFaculty() {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const response = await fetch(`/api/faculty/${id}`);
+        const response = await fetch(`/api/faculties/${id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -37,7 +37,7 @@ export default function ViewFaculty() {
 
   const deleteFaculty = async () => {
     try {
-      const response = await fetch(`/api/faculty/${id}`, {
+      const response = await fetch(`/api/faculties/${id}`, {
         method: "DELETE",
       });
 

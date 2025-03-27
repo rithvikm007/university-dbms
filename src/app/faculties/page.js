@@ -19,7 +19,7 @@ export default function FacultyList() {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const response = await fetch("/api/faculty");
+        const response = await fetch("/api/faculties");
         const data = await response.json();
 
         if (response.ok) {

@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/components/loading";
 
 export default function AddFaculty() {
   const [departments, setDepartments] = useState([]); // Store department list
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
   
   
   const roles = ["Professor", "Associate Professor", "Assistant Professor"];
@@ -31,6 +33,7 @@ export default function AddFaculty() {
 
         if (response.ok) {
           setDepartments(data.departments);
+          setLoading(false);
         } else {
           setError("Failed to load departments.");
         }
@@ -87,6 +90,11 @@ export default function AddFaculty() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
+        {loading && <Loading />}
+        {!loading && (
+          <>
+          
+         
         <h2 className="text-2xl font-bold mb-6 text-center text-black">Add Faculty</h2>
         <form onSubmit={handleSubmit}>
           {/* Name */}
@@ -197,6 +205,8 @@ export default function AddFaculty() {
         {/* Display success or error message */}
         {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
         {success && <div className="mt-4 text-green-500 text-sm">{success}</div>}
+        </>
+        )}
       </div>
     </div>
   );
