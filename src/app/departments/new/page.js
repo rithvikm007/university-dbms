@@ -11,7 +11,7 @@ export default function AddDepartment() {
     email: "",
     phone_no: "",
     password: "",
-    role: "",
+    role: "professor",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -79,7 +79,7 @@ export default function AddDepartment() {
         <form onSubmit={handleSubmit}>
           {/* Department Name */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Department Name</label>
+            <label className="block text-sm font-medium text-gray-700">Department Name<span className="text-red-500">*</span></label>
             <input
               type="text"
               className="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md"
@@ -121,7 +121,7 @@ export default function AddDepartment() {
             {/* Name */}
                 <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-                  Name
+                  Name<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -137,7 +137,7 @@ export default function AddDepartment() {
               {/* Email */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-                  Email Address
+                  Email Address<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -153,7 +153,7 @@ export default function AddDepartment() {
               {/* Phone Number */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="phone_no">
-                  Phone Number
+                  Phone Number<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="tel"
@@ -170,7 +170,7 @@ export default function AddDepartment() {
               {/* Password */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="password">
-                  Password
+                  Password<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
@@ -186,7 +186,7 @@ export default function AddDepartment() {
               {/* Department */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="departmentId">
-                  Department
+                  Department<span className="text-red-500">*</span>
                 </label>
                 <input
                   disabled={true}
@@ -201,7 +201,7 @@ export default function AddDepartment() {
               {/* Role */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="role">
-                  Role
+                  Role<span className="text-red-500">*</span>
                 </label>
                 <select
                   id="role"

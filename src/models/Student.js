@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../utils/db.js";
 import User from "./User.js";
+import Department from "./Department.js";
 
 const Student = sequelize.define("Student", {
   student_id: {
@@ -40,5 +41,8 @@ const Student = sequelize.define("Student", {
 
 User.hasOne(Student, { foreignKey: "student_id", onDelete: "CASCADE" });
 Student.belongsTo(User, { foreignKey: "student_id" });
+
+Department.hasMany(Student, { foreignKey: "department_id", onDelete: "CASCADE" });
+Student.belongsTo(Department, { foreignKey: "department_id" });
 
 export default Student;

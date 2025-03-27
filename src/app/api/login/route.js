@@ -19,7 +19,7 @@ export async function POST(req) {
     }
 
     // Compare the password hash
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const isMatch = await bcrypt.compare(password, user.password);
     console.log("Password match:", isMatch);  // Log the result of the password comparison
     if (!isMatch) {
       console.log("Error: Password mismatch");

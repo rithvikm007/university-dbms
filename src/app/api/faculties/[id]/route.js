@@ -45,17 +45,25 @@ export async function GET(req, context) {
 
 
 // Update a faculty member
-export async function PUT(req, { params }) {
+export async function PUT(req,context) {
   try {
+    const params = await context.params;
     const { id } = params;
-    const { name, department_id, role } = await req.json();
-
+    const { name, department_id, role, phone_no,email } = await req.json();
     const faculty = await Faculty.findByPk(id);
     if (!faculty) {
       return NextResponse.json({ error: "Faculty member not found" }, { status: 404 });
     }
+    const user = await User.findByPk(id);
 
-    await faculty.update({ name, department_id, role });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    await user.update({ name, phone_no, email });
+    await user.save();
+
+    await faculty.update({department_id, role });
+    await faculty.save();
     
     return NextResponse.json({ message: "Faculty updated successfully", faculty }, { status: 200 });
   } catch (error) {
@@ -67,7 +75,8 @@ export async function PUT(req, { params }) {
 // Remove a faculty member
 export async function DELETE(req, context) {
   try {
-    const { id } = context.params;
+    const params = await context.params;
+    const { id } = params;
     const faculty = await Faculty.findByPk(id);
 
     if (!faculty) {

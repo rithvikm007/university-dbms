@@ -41,27 +41,19 @@ export default function ViewDepartment() {
       const response = await fetch(`/api/departments/${id}`, {
         method: "DELETE",
       });
-
+  
+      const data = await response.json(); 
+  
       if (response.ok) {
         router.push("/departments");
       } else {
-        setError("Failed to delete department.");
+        setError(data.error || "Failed to delete department."); 
       }
     } catch (error) {
       setError("Failed to delete department.");
       console.error("Error deleting department:", error);
     }
   };
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <p className="text-red-500 font-semibold">{error}</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -93,6 +85,7 @@ export default function ViewDepartment() {
                 Delete Department
               </button>
             </div>
+            <p className="text-red-500 text-center font-semibold">{error}</p>
           </>
         ) : (
           <Loading />

@@ -1,14 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Loading from "../components/loading";
+
 
 export default function Login() {
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const email = event.target.email.value;
     const password = event.target.password.value;
+    setLoading(true);
 
     try {
       const response = await fetch("/api/login", {
@@ -20,9 +26,25 @@ export default function Login() {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
-        console.log("Login successful:", data);
+        localStorage.setItem("token", data.token);  // Store token
+
+        // Redirect based on user type
+        const userDetailsResponse = await fetch("/api/verifyAdmin", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${data.token}`,
+          },
+        });
+
+        const userDetails = await userDetailsResponse.json();
+        if (userDetails.userType === "admin") {
+          router.push("/admin");  // Redirect to admin dashboard
+        } else {
+          setError("You do not have permission to access this page.");
+          localStorage.removeItem("token");  // Clear token if not an admin
+        }
       } else {
         setError(data.error || "Something went wrong");
       }
@@ -45,7 +67,7 @@ export default function Login() {
               type="email"
               id="email"
               name="email"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
           <div className="mb-4">
@@ -56,18 +78,21 @@ export default function Login() {
               type="password"
               id="password"
               name="password"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
-          <button
+          {loading && <Loading />}
+          {!loading && (
+
+            <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
-          >
+            >
             Log In
           </button>
+          )}
         </form>
-        
-        {/* Display error if login fails */}
+
         {error && (
           <div className="mt-4 text-red-500 text-sm">
             {error}

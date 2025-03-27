@@ -5,6 +5,7 @@ import Faculty from "@/models/Faculty";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import sequelize from "@/utils/db";
+import { Sequelize } from "sequelize";
 
 // Fetch a department
 export async function GET(req, context) {
@@ -45,7 +46,8 @@ export async function PUT(req, context) {
   const transaction = await sequelize.transaction();
   
   try {
-    const { id } = context.params;
+    const params = await context.params;
+    const { id } = params;
     const { name, hod_id } = await req.json();
 
     if (!id) {
@@ -78,17 +80,32 @@ export async function PUT(req, context) {
 
 
 // Remove a department
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
   try {
+    const params = await context.params;
     const department = await Department.findByPk(params.id);
+
     if (!department) {
       return NextResponse.json({ error: "Department not found" }, { status: 404 });
     }
 
     await department.destroy();
     return NextResponse.json({ message: "Department deleted successfully" }, { status: 200 });
+
   } catch (error) {
-    console.error("Error deleting department:", error);
+    console.error("Error deleting department:", JSON.stringify(error, null, 2));
+
+    const errorCode = error.parent?.code?.trim();
+
+    if (errorCode === "23503") {
+      return NextResponse.json(
+        {
+          error: "Cannot delete department because it has associated students or faculty. Please remove or reassign them before deleting.",
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json({ error: "Failed to delete department" }, { status: 500 });
   }
 }
