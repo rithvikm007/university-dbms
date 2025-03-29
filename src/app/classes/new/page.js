@@ -74,7 +74,7 @@ export default function AssignCourse() {
 
             const data = await response.json();
             if (response.ok) {
-                setSuccess("Class assigned successfully!");
+                setSuccess("Course assigned successfully!");
                 setError("");
                 setTimeout(() => {
                     router.push("/classes");

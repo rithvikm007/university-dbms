@@ -19,7 +19,7 @@ export default function AdminDashboard() {
 
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch("/api/verifyAdmin", {
+        const response = await fetch("/api/getUserDetails", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
         });
 
         const data = await response.json();
-        if (response.ok && data.userType === "admin") {
+        if (response.ok && data.user_type === "admin") {
           setLoading(false);
         } else {
           setError("You do not have permission to access this page.");

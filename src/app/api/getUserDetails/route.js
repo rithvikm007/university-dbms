@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import User from "@/models/User";
 
 export async function GET(req) {
   try {
@@ -10,12 +11,21 @@ export async function GET(req) {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (decoded.userType !== "admin") {
-      return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+    
+    if (!decoded.userId) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    return NextResponse.json({ userType: decoded.userType }); 
+    const user = await User.findOne({
+      where: { user_id: decoded.userId },
+      attributes: ["user_id", "name", "email", "phone_no", "user_type"],
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    // console.log(user);
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("Error verifying token:", error);
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });

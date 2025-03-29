@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "../components/loading";
 
-
 export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
@@ -28,9 +27,9 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token); 
 
-        const userDetailsResponse = await fetch("/api/verifyAdmin", {
+        const userDetailsResponse = await fetch("/api/getUserDetails", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${data.token}`,
@@ -38,18 +37,16 @@ export default function Login() {
         });
 
         const userDetails = await userDetailsResponse.json();
-        if (userDetails.userType === "admin") {
-          router.push("/dashboard/admin");  
-        }
-        else if(userDetails.userType === "faculty") {
-          router.push("/dashboard/faculty");  
-        }
-        else if(userDetails.userType === "student") {
-          router.push("/dashboard/student");  
+        if (userDetails.user_type === "admin") {
+          router.push("/dashboard/admin");
+        } else if (userDetails.user_type === "faculty") {
+          router.push("/dashboard/faculty"); 
+        } else if(userDetails.user_type === "student") {
+          router.push("/dashboard/student");
         }
         else {
           setError("You do not have permission to access this page.");
-          localStorage.removeItem("token");  // Clear token if not an admin
+          localStorage.removeItem("token"); // Remove invalid token
         }
       } else {
         setError(data.error || "Something went wrong");
@@ -57,6 +54,8 @@ export default function Login() {
     } catch (error) {
       setError("Something went wrong. Please try again later.");
       console.error("Login error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,6 +73,7 @@ export default function Login() {
               id="email"
               name="email"
               className="mt-1 block w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
             />
           </div>
           <div className="mb-4">
@@ -85,25 +85,21 @@ export default function Login() {
               id="password"
               name="password"
               className="mt-1 block w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
             />
           </div>
           {loading && <Loading />}
           {!loading && (
-
             <button
-            type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+              type="submit"
+              className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
             >
-            Log In
-          </button>
+              Log In
+            </button>
           )}
         </form>
 
-        {error && (
-          <div className="mt-4 text-red-500 text-sm">
-            {error}
-          </div>
-        )}
+        {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
       </div>
     </div>
   );

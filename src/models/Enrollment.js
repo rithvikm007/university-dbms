@@ -1,28 +1,41 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../utils/db.js";
-import Student from "./Student.js";
-import Course from "./Course.js";
+import sequelize from "@/utils/db"; // Assuming you have a database connection setup
+import Student from "./Student";
+import Course from "./Course";
 
-const Enrollment = sequelize.define('Enrollment', {
-  user_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: "students",
-      key: 'student_id',
+const Enrollment = sequelize.define(
+  "Enrollment",
+  {
+    student_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      references: {
+        model: Student,
+        key: "student_id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
-    primaryKey: true,
-  },
-  course_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: "courses",
-      key: 'course_id',
+    course_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      references: {
+        model: Course,
+        key: "course_id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
-    primaryKey: true,
   },
-}, {
-  tableName: 'enrollments',
-  timestamps: false,
-});
+  {
+    tableName: "enrollments",
+    timestamps: false,
+  }
+);
+
+Enrollment.belongsTo(Student, { foreignKey: "student_id" });
+Enrollment.belongsTo(Course, { foreignKey: "course_id" });
 
 export default Enrollment;
