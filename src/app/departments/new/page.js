@@ -28,15 +28,15 @@ export default function AddDepartment() {
       name,
       hod: assignHod
         ? {
-            name: hodDetails.name,
-            email: hodDetails.email,
-            phone_no: hodDetails.phone_no,
-            password: hodDetails.password,
-            role: hodDetails.role, 
-          }
+          name: hodDetails.name,
+          email: hodDetails.email,
+          phone_no: hodDetails.phone_no,
+          password: hodDetails.password,
+          role: hodDetails.role,
+        }
         : null,
     };
-  
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("/api/departments", {
@@ -47,7 +47,7 @@ export default function AddDepartment() {
         },
         body: JSON.stringify(departmentData),
       });
-  
+
       const data = await response.json();
       if (response.ok) {
         setSuccess("Department added successfully!");
@@ -70,7 +70,7 @@ export default function AddDepartment() {
       console.error("Error:", error);
     }
   };
-  
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -93,21 +93,19 @@ export default function AddDepartment() {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Assign HOD now?</label>
             <div className="flex space-x-4 mt-1">
-            <button
+              <button
                 type="button"
                 onClick={() => setAssignHod(true)}
-                className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out ${
-                  assignHod ? "bg-indigo-600 text-white" : "bg-gray-300 !text-black"
-                } hover:scale-105`}
+                className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out ${assignHod ? "bg-indigo-600 text-white" : "bg-gray-300 !text-black"
+                  } hover:scale-105`}
               >
                 Yes
               </button>
               <button
                 type="button"
                 onClick={() => setAssignHod(false)}
-                className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out ${
-                  !assignHod ? "bg-indigo-600 text-white" : "bg-gray-300 !text-black"
-                } hover:scale-105`}
+                className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out ${!assignHod ? "bg-indigo-600 text-white" : "bg-gray-300 !text-black"
+                  } hover:scale-105`}
               >
                 No
               </button>
@@ -117,9 +115,9 @@ export default function AddDepartment() {
           {/* HOD Fields */}
           {assignHod && (
             <div>
-            
-            {/* Name */}
-                <div className="mb-4">
+
+              {/* Name */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700" htmlFor="name">
                   Name<span className="text-red-500">*</span>
                 </label>
@@ -228,6 +226,12 @@ export default function AddDepartment() {
             Add Department
           </button>
         </form>
+        <button
+          onClick={() => router.back()}
+          className="w-full mt-2 py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
+        >
+          Go Back
+        </button>
         {success && <div className="mt-4 text-green-500 text-sm">{success}</div>}
         {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
       </div>

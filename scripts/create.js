@@ -104,8 +104,7 @@ const createEnumAndTable = async () => {
       CREATE TABLE IF NOT EXISTS "classes" (
         "course_id" INTEGER NOT NULL REFERENCES "courses"("course_id") ON DELETE CASCADE ON UPDATE CASCADE,
         "faculty_id" INTEGER NOT NULL REFERENCES "faculties"("faculty_id") ON DELETE CASCADE ON UPDATE CASCADE,
-        "semester" INTEGER NOT NULL,
-        PRIMARY KEY ("course_id", "faculty_id", "semester")
+        PRIMARY KEY ("course_id", "faculty_id")
       );
     `);
 

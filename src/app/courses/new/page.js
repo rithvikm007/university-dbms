@@ -152,7 +152,12 @@ export default function AddCourse() {
                 Add Course
               </button>
             </form>
-
+            <button
+              onClick={() => router.back()}
+              className="w-full mt-2 py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
+            >
+              Go Back
+            </button>
             {/* Display success or error message */}
             {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
             {success && <div className="mt-4 text-green-500 text-sm">{success}</div>}

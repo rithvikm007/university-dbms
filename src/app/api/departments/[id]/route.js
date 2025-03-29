@@ -47,7 +47,7 @@ export async function PUT(req, context) {
   
   try {
     const params = await context.params;
-    const { id } = params;
+    const { id } = params; 
     const { name, hod_id } = await req.json();
 
     if (!id) {

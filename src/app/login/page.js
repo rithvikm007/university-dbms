@@ -28,9 +28,8 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);  // Store token
+        localStorage.setItem("token", data.token);
 
-        // Redirect based on user type
         const userDetailsResponse = await fetch("/api/verifyAdmin", {
           method: "GET",
           headers: {
@@ -40,8 +39,15 @@ export default function Login() {
 
         const userDetails = await userDetailsResponse.json();
         if (userDetails.userType === "admin") {
-          router.push("/dashboard/admin");  // Redirect to admin dashboard
-        } else {
+          router.push("/dashboard/admin");  
+        }
+        else if(userDetails.userType === "faculty") {
+          router.push("/dashboard/faculty");  
+        }
+        else if(userDetails.userType === "student") {
+          router.push("/dashboard/student");  
+        }
+        else {
           setError("You do not have permission to access this page.");
           localStorage.removeItem("token");  // Clear token if not an admin
         }
