@@ -40,7 +40,7 @@ export default function Login() {
 
         const userDetails = await userDetailsResponse.json();
         if (userDetails.userType === "admin") {
-          router.push("/admin");  // Redirect to admin dashboard
+          router.push("/dashboard/admin");  // Redirect to admin dashboard
         } else {
           setError("You do not have permission to access this page.");
           localStorage.removeItem("token");  // Clear token if not an admin

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Loading from "../components/loading";
+import Loading from "../../components/loading";
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
         {/* Add Student Button */}
         <button
           onClick={() => router.push("/students/new")}
-          className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-4"
+          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4"
         >
           Add Student
         </button>
@@ -79,6 +79,13 @@ export default function AdminDashboard() {
           className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4"
         >
           Add Department
+        </button>
+        {/* Add Course Button */}
+        <button
+          onClick={() => router.push("/courses/new")}
+          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4"
+        >
+          Add Course
         </button>
         {/* Log Out Button */}
         <button

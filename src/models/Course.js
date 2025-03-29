@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../utils/db.js";
 
+import Department from "./Department.js";
+
 const Course = sequelize.define('Course', {
   course_id: {
     type: DataTypes.INTEGER,
@@ -22,7 +24,7 @@ const Course = sequelize.define('Course', {
   department_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'departments',
+      model: Department,
       key: 'department_id',
     },
     allowNull: false,
@@ -31,5 +33,8 @@ const Course = sequelize.define('Course', {
   tableName: 'courses',
   timestamps: false,
 });
+
+Department.hasMany(Course, { foreignKey: "department_id", onDelete: "CASCADE" });
+Course.belongsTo(Department, { foreignKey: "department_id" });
 
 export default Course;

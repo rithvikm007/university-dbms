@@ -102,7 +102,7 @@ export default function ViewFaculty() {
             </div>
             <p className="text-red-500 text-center font-semibold">{error}</p>
             <button
-              onClick={() => router.push(`/faculties`)}
+              onClick={() => router.back()}
               className="w-full py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
             >
               Go Back
