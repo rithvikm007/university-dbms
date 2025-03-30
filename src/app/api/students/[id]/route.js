@@ -11,7 +11,7 @@ export async function GET(req, context) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    const student = await Student.findByPk(params.id, {
+    const student = await Student.findByPk(Number(params.id), {
       include: [
         {
           model: User,

@@ -4,6 +4,7 @@ import Loading from "@/app/components/loading";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import { FaUserPlus, FaChalkboardTeacher, FaBuilding, FaBook, FaSignOutAlt, FaTasks } from "react-icons/fa";
 
 export default function FacultyDashboard() {
     const [courses, setCourses] = useState([]);
@@ -13,13 +14,13 @@ export default function FacultyDashboard() {
     const [scheduling, setScheduling] = useState({ courseId: null, date: "" });
     const [examScheduling, setExamScheduling] = useState({ courseId: null, date: "", type: "" });
     const router = useRouter();
-    const [id,setId]=useState(null);
+    const [id, setId] = useState(null);
 
     const handleTakeAttendance = (courseId) => {
         router.push(`/faculty/attendance/${courseId}`);
     };
 
-    
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -216,6 +217,15 @@ export default function FacultyDashboard() {
                         </ul>
                     )}
                 </div>
+                <button
+                    onClick={() => {
+                        localStorage.removeItem("token");
+                        router.push("/login");
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 mt-6"
+                >
+                    <FaSignOutAlt /> Log Out
+                </button>
                 {success && <p className="text-green-500 text-center mt-2">{success}</p>}
                 {error && <p className="text-red-500 text-center mt-2">{error}</p>}
             </div>

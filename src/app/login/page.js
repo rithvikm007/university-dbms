@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "../components/loading";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.userType === "admin") {
+        router.push("/dashboard/admin");
+      } else if (decodedToken.userType === "faculty") {
+        router.push("/dashboard/faculty");
+      } else if (decodedToken.userType === "student") {
+        router.push("/dashboard/student");
+      }
+    }
+  })
   const handleSubmit = async (event) => {
     event.preventDefault();
     const email = event.target.email.value;
