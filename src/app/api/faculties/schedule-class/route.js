@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import Enrollment from "@/models/Enrollment";
 import Attendance from "@/models/Attendance";
-import { Op } from "sequelize";
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -33,7 +32,6 @@ export async function POST(req) {
             return NextResponse.json({ error: "Missing courseId or date" }, { status: 400 });
         }
 
-        // Fetch all students enrolled in this course
         const enrolledStudents = await Enrollment.findAll({
             where: { course_id: courseId },
         });
@@ -42,34 +40,19 @@ export async function POST(req) {
             return NextResponse.json({ message: "No students enrolled in this course." }, { status: 200 });
         }
 
-        // Check for existing attendance records
-        const existingRecords = await Attendance.findAll({
-            where: {
-                course_id: courseId,
-                date: date,
-                student_id: { [Op.in]: enrolledStudents.map(s => s.student_id) }
-            }
+        const newRecords = enrolledStudents.map(student => ({
+            student_id: student.student_id,
+            course_id: courseId,
+            date,
+            status: "Absent",
+        }));
+
+        await Attendance.bulkCreate(newRecords, {
+            ignoreDuplicates: true,
         });
 
-        const existingStudentIds = existingRecords.map(record => record.student_id);
-
-        // Insert only new attendance records
-        const newRecords = enrolledStudents
-            .filter(student => !existingStudentIds.includes(student.student_id))
-            .map(student => ({
-                student_id: student.student_id,
-                course_id: courseId,
-                date,
-                status: "Absent",
-            }));
-
-        if (newRecords.length > 0) {
-            await Attendance.bulkCreate(newRecords);
-        }
-
         return NextResponse.json({ 
-            message: "Class scheduled. Attendance records updated.", 
-            addedRecords: newRecords.length 
+            message: "Class scheduled. Attendance records updated."
         }, { status: 201 });
 
     } catch (error) {

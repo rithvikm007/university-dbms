@@ -146,6 +146,12 @@ export default function FacultyDashboard() {
                                     <p>Semester: {course.semester}</p>
                                     <button
                                         className="mt-2 bg-blue-500 mr-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                        onClick={() => router.push(`/classes/${course.course_id}/${id}`)}
+                                    >
+                                        View Detials
+                                    </button>
+                                    <button
+                                        className="mt-2 bg-blue-500 mr-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => handleScheduleClassClick(course.course_id)}
                                     >
                                         Schedule Class
@@ -164,7 +170,7 @@ export default function FacultyDashboard() {
                                         Take Attendance
                                     </button>
                                     <button
-                                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                        className="mt-2 bg-blue-500 ml-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => router.push(`/faculty/exam-results/${course.course_id}`)}
                                     >
                                         Record Exam Results

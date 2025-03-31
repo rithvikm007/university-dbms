@@ -43,7 +43,7 @@ export default function ExamResultsPage() {
                 setLoading(false);
             }
         };
-        
+
         fetchScheduledExams();
     }, [courseId]);
 
@@ -175,6 +175,12 @@ export default function ExamResultsPage() {
                         ))}
                     </ul>
                 )}
+                <button
+                    onClick={() => router.back()}
+                    className="w-full mt-2 py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
+                >
+                    Go Back
+                </button>
             </div>
         </div>
     );
