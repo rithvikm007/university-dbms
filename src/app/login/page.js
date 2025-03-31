@@ -15,7 +15,7 @@ export default function Login() {
     if(!token) return;
     try {
       const decodedToken = jwtDecode(token);
-      const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+      const currentTime = Math.floor(Date.now() / 1000); 
 
       if (decodedToken.exp && decodedToken.exp < currentTime) {
         localStorage.removeItem("token");
@@ -71,7 +71,7 @@ export default function Login() {
         }
         else {
           setError("You do not have permission to access this page.");
-          localStorage.removeItem("token"); // Remove invalid token
+          localStorage.removeItem("token");
         }
       } else {
         setError(data.error || "Something went wrong");

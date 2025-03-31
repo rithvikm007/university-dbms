@@ -2,25 +2,49 @@ import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from "bcrypt"; 
 
-// Get the current file path using import.meta.url
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load the .env file from the parent directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: process.env.DB_HOST,  // Get host from the .env file
-  username: process.env.DB_USERNAME,  // Get user from the .env file
-  password: process.env.DB_PASSWORD,  // Get password from the .env file
-  database: process.env.DB_NAME,  // Get database name from the .env file
+  host: process.env.DB_HOST, 
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,  
+  database: process.env.DB_NAME,  
 });
+
+const createAdminUser = async () => {
+  try {
+    const existingAdmin = await sequelize.query(
+      `SELECT * FROM "users" WHERE email = 'root@gmail.com' LIMIT 1;`,
+      { type: sequelize.QueryTypes.SELECT }
+    );
+
+    if (existingAdmin.length === 0) {
+      const hashedPassword = await bcrypt.hash("root", 10);
+
+      await sequelize.query(
+        `INSERT INTO "users" ("name", "email", "phone_no", "user_type", "password", "createdAt", "updatedAt")
+         VALUES ('Root', 'root@gmail.com', '0000000000', 'admin', :password, NOW(), NOW());`,
+        { replacements: { password: hashedPassword } }
+      );
+
+      console.log("✅ Default admin user created!");
+    } else {
+      console.log("ℹ️ Admin user already exists.");
+    }
+  } catch (error) {
+    console.error("❌ Error creating admin user:", error);
+  }
+};
+
 
 const createEnumAndTable = async () => {
   try {
-    // Drop existing enums if they exist
     await sequelize.query(`
       DROP TYPE IF EXISTS public.enum_users_user_type;
       DROP TYPE IF EXISTS public.enum_faculty_role;
@@ -153,5 +177,9 @@ const createEnumAndTable = async () => {
   }
 };
 
-// Run the create function
-createEnumAndTable();
+const initializeDatabase = async () => {
+  await createEnumAndTable();
+  await createAdminUser(); 
+};
+
+initializeDatabase();

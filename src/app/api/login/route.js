@@ -6,21 +6,19 @@ import User from '../../../models/User';
 
 export async function POST(req) {
   try {
-    const { email, password } = await req.json();  // Ensure proper destructuring of request body
-    console.log("Email:", email);  // Log to ensure the data is captured
+    const { email, password } = await req.json(); 
+    console.log("Email:", email); 
 
     const user = await User.findOne({ where: { email } });
-    console.log("User found:", user);  // Check if user is found in the database
+    console.log("User found:", user);  
 
-    // If the user doesn't exist, return an error
     if (!user) {
       console.log("Error: User not found");
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Compare the password hash
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match:", isMatch);  // Log the result of the password comparison
+    console.log("Password match:", isMatch);  
     if (!isMatch) {
       console.log("Error: Password mismatch");
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
@@ -28,14 +26,14 @@ export async function POST(req) {
 
     const token = jwt.sign(
       { userId: user.user_id, userType: user.user_type },
-      process.env.JWT_SECRET,  // Ensure this environment variable is set
-      { expiresIn: '1h' }
+      process.env.JWT_SECRET, 
+      { expiresIn: '1d' }
     );
-    console.log("Token generated:", token);  // Log the generated token
+    console.log("Token generated:", token); 
     return NextResponse.json({ token });
 
   } catch (error) {
-    console.error("Login error:", error);  // Log the error for debugging
+    console.error("Login error:", error); 
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }
