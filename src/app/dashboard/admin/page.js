@@ -71,6 +71,9 @@ export default function AdminDashboard() {
               <button onClick={() => router.push("/classes/new")} className="flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
                 <FaTasks /> Assign Course
               </button>
+              <button onClick={() => router.push("/signup")} className="flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
+                <FaTasks /> Add an Admin
+              </button>
             </div>
 
             <button

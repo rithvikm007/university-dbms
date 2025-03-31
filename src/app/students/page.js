@@ -58,12 +58,18 @@ export default function FacultyList() {
 
                 <button
                   onClick={() => router.push(`/students/${member.student_id}`)}
-                  className="px-4 py-2 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition"
+                  className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-400 transition"
                 >
                   View
                 </button>
               </div>
             ))}
+            <button
+              onClick={() => router.back()}
+              className="w-full py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
+            >
+              Go Back
+            </button>
           </div>
         )}
       </div>

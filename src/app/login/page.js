@@ -12,8 +12,16 @@ export default function Login() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    if(!token) return;
+    try {
       const decodedToken = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        localStorage.removeItem("token");
+        return;
+      }
+
       if (decodedToken.userType === "admin") {
         router.push("/dashboard/admin");
       } else if (decodedToken.userType === "faculty") {
@@ -21,8 +29,11 @@ export default function Login() {
       } else if (decodedToken.userType === "student") {
         router.push("/dashboard/student");
       }
+    } catch (error) {
+      console.error("Invalid token:", error);
+      localStorage.removeItem("token");
     }
-  })
+  }, [router]);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const email = event.target.email.value;
@@ -76,7 +87,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-black">Login to UMS</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700" htmlFor="email">

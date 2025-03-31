@@ -96,6 +96,12 @@ export default function Courses() {
                 ))}
               </ul>
             )}
+            <button
+              onClick={() => router.back()}
+              className="w-full py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
+            >
+              Go Back
+            </button>
           </>
         )}
 
@@ -108,6 +114,7 @@ export default function Courses() {
             Add Course
           </button>
         )}
+        
       </div>
     </div>
   );

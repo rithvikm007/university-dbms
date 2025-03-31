@@ -1,11 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 export default function AdminSignUp() {
-  const [error, setError] = useState(""); // For error message
-  const [success, setSuccess] = useState(""); // For success message
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(!token) {
+      router.push("/login");
+      return;
+    }
 
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.userType !== "admin") {
+      router.back();
+      return;
+    }
+
+  })
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const name = event.target.name.value;

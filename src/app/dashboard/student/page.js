@@ -15,6 +15,7 @@ export default function StudentDashboard() {
     const [expandedSections, setExpandedSections] = useState({});
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
+    const [loadingCourses, setLoadingCourses] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -103,6 +104,33 @@ export default function StudentDashboard() {
             ...prev,
             [courseId]: !prev[courseId]
         }));
+    };
+
+    const enrollInCourse = async (courseId) => {
+        setLoadingCourses((prev) => ({ ...prev, [courseId]: true }));
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch("/api/enroll", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ courseId }),
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                setEnrolledCourses([...enrolledCourses, courseId]);
+            } else {
+                setError(data.error || "Enrollment failed.");
+            }
+        } catch (error) {
+            setError("Something went wrong.");
+            console.error("Error enrolling in course:", error);
+        } finally {
+            setLoadingCourses((prev) => ({ ...prev, [courseId]: false }));
+        }
     };
 
     return (
@@ -198,8 +226,13 @@ export default function StudentDashboard() {
                                                 </div>
                                                 <button
                                                     onClick={() => enrollInCourse(course.course_id)}
-                                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                                    Enroll
+                                                    disabled={loadingCourses[course.course_id]}
+                                                    className={`px-4 py-2 rounded-lg text-white transition ${loadingCourses[course.course_id]
+                                                            ? "bg-gray-400 cursor-not-allowed"
+                                                            : "bg-blue-500 hover:bg-blue-600"
+                                                        }`}
+                                                >
+                                                    {loadingCourses[course.course_id] ? "Enrolling..." : "Enroll"}
                                                 </button>
                                             </li>
                                         ))}

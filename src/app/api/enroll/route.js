@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import Enrollment from "@/models/Enrollment";
 import Course from "@/models/Course";
+import Student from "@/models/Student";
 
 export async function POST(req) {
     try {
@@ -13,6 +14,10 @@ export async function POST(req) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.userType !== "student") {
             return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        }
+        const studentExists = await Student.findByPk(decoded.userId);
+        if (!studentExists) {
+            return NextResponse.json({ error: "Student not found" }, { status: 404 });
         }
 
         const { courseId } = await req.json();

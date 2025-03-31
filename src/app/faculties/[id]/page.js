@@ -78,7 +78,7 @@ export default function ViewFaculty() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96 text-left">
-        {faculty ? (
+        {faculty && department ? (
           <>
             
             <h2 className="text-2xl font-bold text-black mb-4">

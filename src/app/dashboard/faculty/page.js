@@ -145,26 +145,26 @@ export default function FacultyDashboard() {
                                     <p>Credits: {course.credits}</p>
                                     <p>Semester: {course.semester}</p>
                                     <button
-                                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                        className="mt-2 bg-blue-500 mr-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => handleScheduleClassClick(course.course_id)}
                                     >
                                         Schedule Class
                                     </button>
                                     <button
-                                        className="ml-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                                        className="mt-2 bg-blue-500 mx-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => handleScheduleExamClick(course.course_id)}
                                     >
                                         Schedule Exam
                                     </button>
 
                                     <button
-                                        className="bg-purple-500 ml-2 text-white px-4 py-2 rounded-md hover:bg-purple-700"
+                                        className="mt-2 bg-blue-500 ml-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => handleTakeAttendance(course.course_id)}
                                     >
                                         Take Attendance
                                     </button>
                                     <button
-                                        className="bg-orange-500 mt-1 text-white px-4 py-2 rounded-md hover:bg-orange-700"
+                                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => router.push(`/faculty/exam-results/${course.course_id}`)}
                                     >
                                         Record Exam Results
