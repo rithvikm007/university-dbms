@@ -31,7 +31,12 @@ export default function AttendancePage() {
 
                 const data = await response.json();
                 if (response.ok) {
-                    setSessions(data.sessions);
+                    const groupedByDate = Array.from(
+                        new Set(data.sessions.map(session => session.date))
+                      )
+                        .map(date => ({ date }))
+                        .sort((a, b) => new Date(a.date) - new Date(b.date)); 
+                    setSessions(groupedByDate);
                 } else {
                     setError(data.error || "Failed to fetch scheduled sessions.");
                 }

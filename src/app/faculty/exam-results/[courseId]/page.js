@@ -32,7 +32,8 @@ export default function ExamResultsPage() {
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    setExams(data.exams);
+                    const sortedExams = data.exams.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    setExams(sortedExams);
                 } else {
                     setError(data.error || "Failed to fetch scheduled exams.");
                 }

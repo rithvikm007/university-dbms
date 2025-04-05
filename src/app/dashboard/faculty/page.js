@@ -164,13 +164,13 @@ export default function FacultyDashboard() {
                                     </button>
 
                                     <button
-                                        className="mt-2 bg-blue-500 ml-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => handleTakeAttendance(course.course_id)}
                                     >
                                         Take Attendance
                                     </button>
                                     <button
-                                        className="mt-2 bg-blue-500 ml-1 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                                         onClick={() => router.push(`/faculty/exam-results/${course.course_id}`)}
                                     >
                                         Record Exam Results
