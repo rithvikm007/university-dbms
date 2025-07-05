@@ -1,240 +1,307 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Building, User, Mail, Phone, Lock, UserPlus, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react"
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { Separator } from "@/components/ui/separator"
+import useRestrictToUserType from "@/hooks/useRestrictToUserType"
 
 export default function AddDepartment() {
-  const [name, setName] = useState("");
-  const [assignHod, setAssignHod] = useState(false);
+  useRestrictToUserType(["admin"])
+  const [name, setName] = useState("")
+  const [assignHod, setAssignHod] = useState(false)
   const [hodDetails, setHodDetails] = useState({
     name: "",
     email: "",
     phone_no: "",
     password: "",
     role: "professor",
-  });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const router = useRouter();
-  const roles = ["Professor", "Associate Professor", "Assistant Professor"];
+  })
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const router = useRouter()
+
+  const roles = ["Professor", "Associate Professor", "Assistant Professor"]
   const roleMapping = {
-    "Professor": "professor",
+    Professor: "professor",
     "Associate Professor": "associate_professor",
     "Assistant Professor": "assistant_professor",
-  };
+  }
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
+    setSubmitting(true)
+    setError("")
+    setSuccess("")
+
     const departmentData = {
       name,
       hod: assignHod
         ? {
-          name: hodDetails.name,
-          email: hodDetails.email,
-          phone_no: hodDetails.phone_no,
-          password: hodDetails.password,
-          role: hodDetails.role,
-        }
+            name: hodDetails.name,
+            email: hodDetails.email,
+            phone_no: hodDetails.phone_no,
+            password: hodDetails.password,
+            role: hodDetails.role,
+          }
         : null,
-    };
+    }
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token")
       const response = await fetch("/api/departments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(departmentData),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
       if (response.ok) {
-        setSuccess("Department added successfully!");
-        setError("");
-        setName("");
-        setAssignHod(false);
-        setHodDetails({
-          name: "",
-          email: "",
-          phone_no: "",
-          password: "",
-          role: "professor",
-        });
-        router.push("/departments");
+        setSuccess("Department added successfully!")
+        setTimeout(() => {
+          router.push("/admin")
+        }, 2000)
       } else {
-        setError(data.error || "Something went wrong.");
+        setError(data.error || "Something went wrong.")
       }
     } catch (error) {
-      setError("Something went wrong. Please try again.");
-      console.error("Error:", error);
+      setError("Something went wrong. Please try again.")
+      console.error("Error:", error)
+    } finally {
+      setSubmitting(false)
     }
-  };
-
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">Add Department</h2>
-        <form onSubmit={handleSubmit}>
-          {/* Department Name */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Department Name<span className="text-red-500">*</span></label>
-            <input
-              type="text"
-              className="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+    <SidebarProvider>
+    <SidebarInset>
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-6">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-lg font-semibold">Add Department</h1>
+            <p className="text-sm text-muted-foreground">Create a new department</p>
           </div>
+        </div>
+      </header>
 
-          {/* Assign HOD Toggle */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Assign HOD now?</label>
-            <div className="flex space-x-4 mt-1">
-              <button
-                type="button"
-                onClick={() => setAssignHod(true)}
-                className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out ${assignHod ? "bg-indigo-600 text-white" : "bg-gray-300 !text-black"
-                  } hover:scale-105`}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                onClick={() => setAssignHod(false)}
-                className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out ${!assignHod ? "bg-indigo-600 text-white" : "bg-gray-300 !text-black"
-                  } hover:scale-105`}
-              >
-                No
-              </button>
-            </div>
-          </div>
-
-          {/* HOD Fields */}
-          {assignHod && (
-            <div>
-
-              {/* Name */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-                  Name<span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={hodDetails.name}
-                  name="name"
-                  required
-                  onChange={(e) => setHodDetails({ ...hodDetails, name: e.target.value })}
-                  className="mt-1 block w-full px-4 text-black py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-                  Email Address<span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={hodDetails.email}
-                  required
-                  onChange={(e) => setHodDetails({ ...hodDetails, email: e.target.value })}
-                  className="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-
-              {/* Phone Number */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700" htmlFor="phone_no">
-                  Phone Number<span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  id="phone_no"
-                  name="phone_no"
-                  required
-                  pattern="[0-9]{10}"
-                  value={hodDetails.phone_no}
-                  onChange={(e) => setHodDetails({ ...hodDetails, phone_no: e.target.value })}
-                  className="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-
-              {/* Password */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700" htmlFor="password">
-                  Password<span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  required
-                  value={hodDetails.password}
-                  onChange={(e) => setHodDetails({ ...hodDetails, password: e.target.value })}
-                  className="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-
-              {/* Department */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700" htmlFor="departmentId">
-                  Department<span className="text-red-500">*</span>
-                </label>
-                <input
-                  disabled={true}
-                  id="departmentId"
-                  name="departmentId"
-                  required
-                  value={name}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-200 text-gray-500 cursor-not-allowed"
-                />
-              </div>
-
-              {/* Role */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700" htmlFor="role">
-                  Role<span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  value={hodDetails.role}
-                  required
-                  onChange={(e) => setHodDetails({ ...hodDetails, role: e.target.value })}
-                  className="mt-1 block w-full px-4 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  {Object.entries(roleMapping).map(([display, value]) => {
-                    return (
-                      <option key={value} value={value}>
-                        {display}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
+      <div className="flex-1 space-y-6 p-6">
+        <div className="max-w-2xl mx-auto">
+          {/* Status Messages */}
+          {success && (
+            <Card className="border-green-200 bg-green-50 mb-6">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <p className="text-green-600">{success}</p>
+                </div>
+              </CardContent>
+            </Card>
           )}
 
-          {/* Submit Button */}
-          <button type="submit" className="w-full py-2 px-4 mt-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">
-            Add Department
-          </button>
-        </form>
-        <button
-          onClick={() => router.back()}
-          className="w-full mt-2 py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
-        >
-          Go Back
-        </button>
-        {success && <div className="mt-4 text-green-500 text-sm">{success}</div>}
-        {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
+          {error && (
+            <Card className="border-red-200 bg-red-50 mb-6">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <p className="text-red-600">{error}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building className="h-5 w-5" />
+                Department Information
+              </CardTitle>
+              <CardDescription>Enter the details for the new department</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Department Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="flex items-center gap-2">
+                    <Building className="h-4 w-4" />
+                    Department Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter department name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Assign HOD Toggle */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="flex items-center gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        Assign Head of Department
+                      </Label>
+                      <p className="text-sm text-muted-foreground">Would you like to assign a HOD now?</p>
+                    </div>
+                    <Switch checked={assignHod} onCheckedChange={setAssignHod} />
+                  </div>
+                </div>
+
+                {/* HOD Details */}
+                {assignHod && (
+                  <Card className="border-muted">
+                    <CardHeader>
+                      <CardTitle className="text-base">Head of Department Details</CardTitle>
+                      <CardDescription>Enter the information for the department head</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {/* HOD Name */}
+                        <div className="space-y-2">
+                          <Label htmlFor="hod-name" className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            Full Name <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="hod-name"
+                            type="text"
+                            placeholder="Enter full name"
+                            value={hodDetails.name}
+                            onChange={(e) => setHodDetails({ ...hodDetails, name: e.target.value })}
+                            required={assignHod}
+                          />
+                        </div>
+
+                        {/* HOD Email */}
+                        <div className="space-y-2">
+                          <Label htmlFor="hod-email" className="flex items-center gap-2">
+                            <Mail className="h-4 w-4" />
+                            Email Address <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="hod-email"
+                            type="email"
+                            placeholder="Enter email address"
+                            value={hodDetails.email}
+                            onChange={(e) => setHodDetails({ ...hodDetails, email: e.target.value })}
+                            required={assignHod}
+                          />
+                        </div>
+
+                        {/* HOD Phone */}
+                        <div className="space-y-2">
+                          <Label htmlFor="hod-phone" className="flex items-center gap-2">
+                            <Phone className="h-4 w-4" />
+                            Phone Number <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="hod-phone"
+                            type="tel"
+                            placeholder="Enter phone number"
+                            pattern="[0-9]{10}"
+                            value={hodDetails.phone_no}
+                            onChange={(e) => setHodDetails({ ...hodDetails, phone_no: e.target.value })}
+                            required={assignHod}
+                          />
+                        </div>
+
+                        {/* HOD Password */}
+                        <div className="space-y-2">
+                          <Label htmlFor="hod-password" className="flex items-center gap-2">
+                            <Lock className="h-4 w-4" />
+                            Password <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="hod-password"
+                            type="password"
+                            placeholder="Enter password"
+                            value={hodDetails.password}
+                            onChange={(e) => setHodDetails({ ...hodDetails, password: e.target.value })}
+                            required={assignHod}
+                          />
+                        </div>
+
+                        {/* Department (Read-only) */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2">
+                            <Building className="h-4 w-4" />
+                            Department
+                          </Label>
+                          <Input value={name || "Department name will appear here"} disabled className="bg-muted" />
+                        </div>
+
+                        {/* HOD Role */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2">
+                            <UserPlus className="h-4 w-4" />
+                            Role <span className="text-red-500">*</span>
+                          </Label>
+                          <Select
+                            value={hodDetails.role}
+                            onValueChange={(value) => setHodDetails({ ...hodDetails, role: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(roleMapping).map(([display, value]) => (
+                                <SelectItem key={value} value={value}>
+                                  {display}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                <div className="flex gap-4 pt-6">
+                  <Button type="submit" disabled={submitting} className="flex-1">
+                    {submitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        Adding Department...
+                      </>
+                    ) : (
+                      <>
+                        <Building className="h-4 w-4 mr-2" />
+                        Add Department
+                      </>
+                    )}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => router.back()} disabled={submitting}>
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
-  );
+    </SidebarInset>
+    </SidebarProvider>
+  )
 }

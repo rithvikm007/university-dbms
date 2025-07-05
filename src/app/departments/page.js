@@ -1,84 +1,179 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Loading from "@/app/components/loading";
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { Search, Building2, Plus, Users, UserCheck } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import Loading from "@/app/components/loading"
+import useRestrictToUserType from "@/hooks/useRestrictToUserType"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
 
 export default function Departments() {
-  const [departments, setDepartments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const router = useRouter();
+  useRestrictToUserType(["admin"])
+  const [departments, setDepartments] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
+  const router = useRouter()
 
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch("/api/departments");
-        const data = await response.json();
+        const response = await fetch("/api/departments")
+        const data = await response.json()
         if (response.ok) {
-          setDepartments(data.departments);
+          setDepartments(data.departments)
         } else {
-          setError("Failed to load departments.");
+          setError("Failed to load departments.")
         }
       } catch (error) {
-        console.error("Error fetching departments:", error);
-        setError("Something went wrong.");
+        console.error("Error fetching departments:", error)
+        setError("Something went wrong.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchDepartments();
-  }, []);
+    fetchDepartments()
+  }, [])
+
+  const filteredDepartments = departments.filter((dept) => dept.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-black text-center">Departments</h2>
+    <SidebarProvider>
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/admin">Dashboard</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Departments</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
 
-        {/* Loading State */}
-        {loading && <Loading />}
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Departments</h1>
+              <p className="text-muted-foreground">Manage and view all academic departments</p>
+            </div>
+            <Button onClick={() => router.push("/departments/new")}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Department
+            </Button>
+          </div>
 
-        {/* Error State */}
-        {!loading && error && <p className="text-red-500 text-center">{error}</p>}
+          <div className="flex items-center space-x-2">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search departments..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="max-w-sm"
+            />
+          </div>
 
-        {/* Departments List */}
-        {!loading && !error && (
-          <>
-            {departments.length === 0 ? (
-              <p className="text-gray-600 text-center">No departments available.</p>
-            ) : (
-              <ul>
-                {departments.map((dept) => (
-                  <li
-                    key={dept.department_id}
-                    className="py-2 px-4 text-black bg-gray-200 rounded-md mb-2 cursor-pointer hover:bg-gray-300"
-                    onClick={() => router.push(`/departments/${dept.department_id}`)}
-                  >
-                    {dept.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <button
-              onClick={() => router.back()}
-              className="w-full mt-2 py-2 px-4 bg-blue-500 text-md text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 mb-4"
-            >
-              Go Back
-            </button>
-          </>
-        )}
+          {loading ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-1/2 mb-4"></div>
+                    <div className="h-6 bg-muted rounded w-20"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : error ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold text-red-600">Error Loading Departments</h3>
+                <p className="text-muted-foreground text-center">{error}</p>
+              </CardContent>
+            </Card>
+          ) : filteredDepartments.length === 0 ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold">No Departments Found</h3>
+                <p className="text-muted-foreground text-center mb-4">
+                  {searchTerm
+                    ? "No departments match your search criteria."
+                    : "Get started by adding your first department."}
+                </p>
+                {!searchTerm && (
+                  <Button onClick={() => router.push("/departments/new")}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add First Department
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filteredDepartments.map((dept) => (
+                <Card
+                  key={dept.department_id}
+                  className="hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => router.push(`/departments/${dept.department_id}`)}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Building2 className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg">{dept.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground">ID: {dept.department_id}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center space-x-1">
+                        <Users className="h-4 w-4" />
+                        <span>Students</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <UserCheck className="h-4 w-4" />
+                        <span>Faculty</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
 
-        {/* Admin-only button */}
-        {typeof window !== "undefined" && localStorage.getItem("userType") === "admin" && (
-          <button
-            onClick={() => router.push("/departments/new")}
-            className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4"
-          >
-            Add Department
-          </button>
-        )}
-      </div>
-    </div>
-  );
+          <div className="flex items-center justify-between pt-4">
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredDepartments.length} of {departments.length} departments
+            </p>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }

@@ -1,14 +1,13 @@
-"use client";
+"use client"
 
-import AdminNavbar from "@/app/components/AdminNavbar";
-
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { AdminSidebar } from "@/app/components/admin-sidebar"
 
 export default function AdminLayout({ children }) {
-    return (
-        <div className="flex flex-col h-screen overflow-hidden">
-            <AdminNavbar />
-            <main className="flex-1 overflow-auto">{children}</main>
-        </div>
-    );
+  return (
+    <SidebarProvider>
+      <AdminSidebar />
+      <main className="flex-1 overflow-auto bg-gray-50/50">{children}</main>
+    </SidebarProvider>
+  )
 }
-
